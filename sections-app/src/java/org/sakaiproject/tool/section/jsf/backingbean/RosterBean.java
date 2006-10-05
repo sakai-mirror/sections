@@ -64,15 +64,11 @@ public class RosterBean extends CourseDependentBean implements Serializable {
 	private String searchText;
 	private int firstRow;
 	private int enrollmentsSize;
-	private boolean externallyManaged;
 
 	private List enrollments;
 	private List categories;
 	
 	public void init() {
-		// Determine whether this course is externally managed
-		externallyManaged = getCourse().isExternallyManaged();
-
 		// Get the default search text
 		if(StringUtils.trimToNull(searchText) == null) {
 			searchText = JsfUtil.getLocalizedMessage("roster_search_text");
@@ -199,9 +195,6 @@ public class RosterBean extends CourseDependentBean implements Serializable {
 	}
 	public int getEnrollmentsSize() {
 		return enrollmentsSize;
-	}
-	public boolean isExternallyManaged() {
-		return externallyManaged;
 	}
 	public String getSearchText() {
 		return searchText;

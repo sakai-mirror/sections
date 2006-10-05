@@ -4,7 +4,7 @@
 
     <sakai:flowState bean="#{overviewBean}"/>
 
-    <h:panelGroup rendered="#{ ! overviewBean.externallyManaged}">
+    <h:panelGroup>
         <x:aliasBean alias="#{viewName}" value="overview">
             <%@include file="/inc/navMenu.jspf"%>
         </x:aliasBean>
@@ -34,7 +34,7 @@
                 <h:outputText value="#{section.title}"/>
             </x:div>
             <x:div styleClass="itemAction">
-                <h:panelGroup rendered="#{ ! overviewBean.externallyManaged && overviewBean.sectionManagementEnabled}">
+                <h:panelGroup rendered="#{overviewBean.sectionManagementEnabled}">
                     <h:commandLink action="editSection" value="#{msgs.overview_link_edit}">
                         <f:param name="sectionUuid" value="#{section.uuid}"/>
                     </h:commandLink>
@@ -48,7 +48,7 @@
                         <f:param name="sectionUuid" value="#{section.uuid}"/>
                 </h:commandLink>
     
-                <h:panelGroup rendered="#{ ! overviewBean.externallyManaged}">
+                <h:panelGroup>
                     <h:outputFormat
                         value=" #{msgs.overview_link_sep_char} "
                         rendered="#{overviewBean.sectionTaManagementEnabled}"/>

@@ -51,7 +51,7 @@ public class CourseManagerTest extends SectionsTestBase {
     }
     
     public void testRemoveStudentFromCourse() throws Exception {
-    	Course course = courseManager.createCourse("site", "course title", false, false, false);
+    	Course course = courseManager.createCourse("site", "course title", false, false);
     	User student1 = userManager.createUser("userUid", "foo", "bar", "baz");
     	CourseSection section1 = sectionManager.addSection(course.getUuid(), "a section", "a category",
     			null, null, null, null, false, false, false, false, false, false, false);
@@ -71,7 +71,7 @@ public class CourseManagerTest extends SectionsTestBase {
     }
 
     public void testRemoveTaFromCourse() throws Exception {
-    	Course course = courseManager.createCourse("site", "course title", false, false, false);
+    	Course course = courseManager.createCourse("site", "course title", false, false);
     	User ta1 = userManager.createUser("userUid", "foo", "bar", "baz");
     	CourseSection section1 = sectionManager.addSection(course.getUuid(), "a section", "a category",
     			null, null, null, null, false, false, false, false, false, false, false);
@@ -93,7 +93,7 @@ public class CourseManagerTest extends SectionsTestBase {
     }
     
     public void testRemoveOrphanedSectionMemberships() throws Exception {
-    	Course course = courseManager.createCourse("site", "course title", false, false, false);
+    	Course course = courseManager.createCourse("site", "course title", false, false);
     	User ta1 = userManager.createUser("userUid1", "foo1", "bar1", "baz1");
     	User ta2 = userManager.createUser("userUid2", "foo2", "bar2", "baz2");
     	User student1 = userManager.createUser("userUid3", "foo3", "bar3", "baz3");

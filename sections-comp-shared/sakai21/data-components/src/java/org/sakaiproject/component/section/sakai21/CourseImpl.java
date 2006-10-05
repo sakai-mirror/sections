@@ -44,7 +44,6 @@ public class CourseImpl implements Course, Serializable {
 		this.uuid = site.getReference();
 		this.title = site.getTitle();
 		this.siteContext = site.getId();
-		this.externallyManaged = Boolean.valueOf(site.getProperties().getProperty(CourseImpl.EXTERNALLY_MAINTAINED)).booleanValue();
 		this.selfRegistrationAllowed = Boolean.valueOf(site.getProperties().getProperty(CourseImpl.STUDENT_REGISTRATION_ALLOWED)).booleanValue();
 		this.selfSwitchingAllowed = Boolean.valueOf(site.getProperties().getProperty(CourseImpl.STUDENT_SWITCHING_ALLOWED)).booleanValue();
 	}
@@ -83,12 +82,6 @@ public class CourseImpl implements Course, Serializable {
 	}
 	public void setSiteContext(String siteContext) {
 		this.siteContext = siteContext;
-	}
-	public boolean isExternallyManaged() {
-		return externallyManaged;
-	}
-	public void setExternallyManaged(boolean externallyManaged) {
-		this.externallyManaged = externallyManaged;
 	}
 	public String getTitle() {
 		return title;

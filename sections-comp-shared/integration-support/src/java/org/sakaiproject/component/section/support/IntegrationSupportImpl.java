@@ -60,7 +60,7 @@ public class IntegrationSupportImpl extends HibernateDaoSupport implements Integ
 	public Course createCourse(String siteContext, String title, boolean externallyManaged,
 			boolean selfRegistrationAllowed, boolean selfSwitchingAllowed) {
 		return courseManager.createCourse(siteContext, title, selfRegistrationAllowed,
-				selfSwitchingAllowed, externallyManaged);
+				selfSwitchingAllowed);
 	}
 
 	public CourseSection createSection(String courseUuid, String title, String category, Integer maxEnrollments,

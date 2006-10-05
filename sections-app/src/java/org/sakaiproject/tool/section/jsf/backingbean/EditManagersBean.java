@@ -64,8 +64,6 @@ public class EditManagersBean extends CourseDependentBean implements Serializabl
 	protected String sectionTitle;
 	protected String sectionDescription;
 	
-	protected boolean externallyManaged;
-
 	/**
 	 * Compares ParticipationRecords by users' sortNames.
 	 */
@@ -78,9 +76,6 @@ public class EditManagersBean extends CourseDependentBean implements Serializabl
 	};
 
 	protected CourseSectionDecorator initializeFields() {
-		// Determine whether this course is externally managed
-		externallyManaged = getCourse().isExternallyManaged();
-		
 		// Get the section to edit
 		String sectionUuidFromParam = (String)FacesContext.getCurrentInstance()
 			.getExternalContext().getRequestParameterMap().get("sectionUuid");
@@ -205,10 +200,6 @@ public class EditManagersBean extends CourseDependentBean implements Serializabl
 
 	public String getSectionTitle() {
 		return sectionTitle;
-	}
-
-	public boolean isExternallyManaged() {
-		return externallyManaged;
 	}
 
 	public String getSectionDescription() {

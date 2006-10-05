@@ -53,15 +53,13 @@ public class CourseManagerHibernateImpl extends HibernateDaoSupport
 	protected IdManager uuidManager;
 
 	public Course createCourse(final String siteContext, final String title,
-			final boolean selfRegAllowed, final boolean selfSwitchingAllowed,
-			final boolean externallyManaged) {
+			final boolean selfRegAllowed, final boolean selfSwitchingAllowed) {
 		
 		if(log.isDebugEnabled()) log.debug("Creating a new course offering named " + title);
 
 		HibernateCallback hc = new HibernateCallback() {
 			public Object doInHibernate(Session session) throws HibernateException ,SQLException {
 				CourseImpl course = new CourseImpl();
-        		course.setExternallyManaged(externallyManaged);
         		course.setSelfRegistrationAllowed(selfRegAllowed);
         		course.setSelfSwitchingAllowed(selfSwitchingAllowed);
         		course.setSiteContext(siteContext);

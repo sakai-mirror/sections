@@ -105,7 +105,7 @@
                 <h:outputText value="#{section.spotsAvailable}"/>
             </h:column>
 
-            <h:column rendered="#{!studentViewBean.externallyManaged}">
+            <h:column>
                 <h:commandLink
                     value="#{msgs.student_view_join}"
                     actionListener="#{studentViewBean.processJoinSection}"

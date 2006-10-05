@@ -46,8 +46,7 @@ public class CourseManagerImpl implements CourseManager {
 	 * @inheritDoc
 	 */
 	public Course createCourse(final String siteContext, final String title,
-			final boolean selfRegAllowed, final boolean selfSwitchingAllowed,
-			final boolean externallyManaged) {
+			final boolean selfRegAllowed, final boolean selfSwitchingAllowed) {
 
 		log.warn("There should be no need to call " +
 				"org.sakaiproject.api.section.CourseManager.createCourse() in " +
@@ -66,7 +65,6 @@ public class CourseManagerImpl implements CourseManager {
 		// Update the course with the new booleans passed to this method
 		course.setSelfRegistrationAllowed(selfRegAllowed);
 		course.setSelfSwitchingAllowed(selfSwitchingAllowed);
-		course.setExternallyManaged(externallyManaged);
 		course.decorateSite(site);
 		
 		// Save the modified site

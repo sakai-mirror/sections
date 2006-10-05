@@ -68,7 +68,7 @@ public class SectionAwarenessTest extends SectionsTestBase{
     	List categories = secAware.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	courseMgr.createCourse(siteContext, "A course", false, false);
     	Course course = secMgr.getCourse(siteContext);
     	
     	String firstCategory = (String)categories.get(0);
@@ -99,7 +99,7 @@ public class SectionAwarenessTest extends SectionsTestBase{
     	List categories = secAware.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	courseMgr.createCourse(siteContext, "A course", false, false);
     	Course course = secMgr.getCourse(siteContext);
     	
     	String firstCategory = (String)categories.get(0);
@@ -137,7 +137,7 @@ public class SectionAwarenessTest extends SectionsTestBase{
     	List categories = secAware.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	courseMgr.createCourse(siteContext, "A course", false, false);
     	Course course = secMgr.getCourse(siteContext);
     	String firstCategory = (String)categories.get(0);
     	CourseSection sec = secMgr.addSection(course.getUuid(), "A section", firstCategory, new Integer(10), null, null, null, false,  false, false,  false, false, false, false);
@@ -222,7 +222,7 @@ public class SectionAwarenessTest extends SectionsTestBase{
     	List categories = secAware.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	Course course = courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	Course course = courseMgr.createCourse(siteContext, "A course", false, false);
     	
     	String firstCategory = (String)categories.get(0);
     	CourseSection sec = secMgr.addSection(course.getUuid(), "A section", firstCategory, new Integer(10), null, null, null, false,  false, false,  false, false, false, false);

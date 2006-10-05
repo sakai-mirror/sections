@@ -46,7 +46,6 @@ public class OverviewBean extends CourseDependentBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final Log log = LogFactory.getLog(OverviewBean.class);
 
-	private boolean externallyManaged;
 	private String rowClasses;
 
 	private List sections;
@@ -55,9 +54,6 @@ public class OverviewBean extends CourseDependentBean implements Serializable {
 	private List categoryNames; // Must be ordered exactly like the category ids
 
 	public void init() {
-		// Determine whether this course is externally managed
-		externallyManaged = getCourse().isExternallyManaged();
-
 		// Get all sections in the site
 		List sectionSet = getAllSiteSections();
 		sections = new ArrayList();
@@ -157,19 +153,15 @@ public class OverviewBean extends CourseDependentBean implements Serializable {
 		return "overview";
 	}
 	public boolean isDeleteRendered() {
-		return (!externallyManaged) && sections.size() > 0 && isSectionManagementEnabled();
+		return sections.size() > 0 && isSectionManagementEnabled();
 	}
 
 	public List getSections() {
 		return sections;
 	}
-	public boolean isExternallyManaged() {
-		return externallyManaged;
-	}
 	public String getRowClasses() {
 		return rowClasses;
 	}
-
 	public List getSectionsToDelete() {
 		return sectionsToDelete;
 	}

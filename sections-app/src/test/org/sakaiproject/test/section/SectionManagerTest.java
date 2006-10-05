@@ -92,7 +92,7 @@ public class SectionManagerTest extends SectionsTestBase{
     	List categories = secMgr.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	Course newCourse = courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	Course newCourse = courseMgr.createCourse(siteContext, "A course", false, false);
     	Course course = secMgr.getCourse(siteContext);
     	
     	// Assert that the correct course was retrieved

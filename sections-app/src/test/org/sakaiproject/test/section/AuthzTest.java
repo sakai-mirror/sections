@@ -66,7 +66,7 @@ public class AuthzTest extends SectionsTestBase{
     	List categories = secMgr.getSectionCategories(siteContext);
     	
     	// Add a course and a section to work from
-    	Course course = courseMgr.createCourse(siteContext, "A course", false, false, false);
+    	Course course = courseMgr.createCourse(siteContext, "A course", false, false);
     	
     	CourseSection sec1 = secMgr.addSection(course.getUuid(), "A section", (String)categories.get(0), new Integer(10), null, null, null, false,  false, false,  false, false, false, false);
     	CourseSection sec2 = secMgr.addSection(course.getUuid(), "Another section", (String)categories.get(1), new Integer(10), null, null, null, false,  false, false,  false, false, false, false);

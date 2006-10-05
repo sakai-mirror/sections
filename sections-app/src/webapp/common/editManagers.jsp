@@ -4,7 +4,7 @@
 
     <sakai:flowState bean="#{editManagersBean}"/>
 
-    <h:panelGroup rendered="#{ ! editManagersBean.externallyManaged}">
+    <h:panelGroup">
         <x:aliasBean alias="#{viewName}" value="editManagers">
             <%@include file="/inc/navMenu.jspf"%>
         </x:aliasBean>

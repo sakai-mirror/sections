@@ -51,8 +51,7 @@ public interface CourseManager {
 	 * @return The newly created Course object.
 	 */
 	public Course createCourse(String siteContext, String title,
-			boolean selfRegAllowed, boolean selfSwitchingAllowed,
-			boolean externallyManaged);
+			boolean selfRegAllowed, boolean selfSwitchingAllowed);
 	
 	/**
 	 * Checks to see whether a course exists in this site.

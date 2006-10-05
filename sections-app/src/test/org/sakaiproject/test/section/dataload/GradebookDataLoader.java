@@ -64,10 +64,6 @@ public class GradebookDataLoader extends SectionsTestBase {
     	false, false, false, false,
     	false, false, false, false,
     };
-    public static boolean[] SITE_EXTERNALLY_MANAGED = {
-    	true, false, false, false,
-    	false, false, false, false,
-    };
 
     /** Special users */
     public final static String AUTHID_TEACHER_ALL = "authid_teacher";
@@ -99,7 +95,7 @@ public class GradebookDataLoader extends SectionsTestBase {
 		// Load courses. (No sections yet!)
 		List sites = new ArrayList(SITE_UIDS.length);
 		for (int i = 0; i < SITE_UIDS.length; i++) {
-			sites.add(courseManager.createCourse(SITE_UIDS[i], SITE_NAMES[i], SITE_SELF_REG[i], SITE_SELF_SWITCH[i], SITE_EXTERNALLY_MANAGED[i]));
+			sites.add(courseManager.createCourse(SITE_UIDS[i], SITE_NAMES[i], SITE_SELF_REG[i], SITE_SELF_SWITCH[i]));
 		}
 
 		// Load users.

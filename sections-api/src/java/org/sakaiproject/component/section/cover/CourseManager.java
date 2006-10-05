@@ -41,8 +41,8 @@ public class CourseManager {
 		return getInstance().courseExists(siteContext);
 	}
 	
-	public static final Course createCourse(String siteContext, String title, boolean selfRegAllowed, boolean selfSwitchingAllowed, boolean externallyManaged) {
-		return getInstance().createCourse(siteContext, title, selfRegAllowed, selfSwitchingAllowed, externallyManaged);
+	public static final Course createCourse(String siteContext, String title, boolean selfRegAllowed, boolean selfSwitchingAllowed) {
+		return getInstance().createCourse(siteContext, title, selfRegAllowed, selfSwitchingAllowed);
 	}
 
 	private static org.sakaiproject.api.section.CourseManager getInstance() {
