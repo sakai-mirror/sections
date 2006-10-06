@@ -604,10 +604,11 @@ public class SectionManagerHibernateImpl extends HibernateDaoSupport implements
     public CourseSection addSection(final String courseUuid, final String title,
     		final String category, final Integer maxEnrollments,
     		final String location, final Time startTime,
-    		final Time endTime, final boolean monday,
+    		final Time endTime, final String enterpriseId, final boolean monday,
     		final boolean tuesday, final boolean wednesday, final boolean thursday,
     		final boolean friday, final boolean saturday, final boolean sunday) {
     	final String uuid = uuidManager.createUuid();
+    	final boolean enterpriseManaged = (enterpriseId != null);
         if(log.isDebugEnabled()) log.debug("Creating section with uuid = " + uuid);
         HibernateCallback hc = new HibernateCallback(){
             public Object doInHibernate(Session session) throws HibernateException {
@@ -617,7 +618,7 @@ public class SectionManagerHibernateImpl extends HibernateDaoSupport implements
             	}
             	String uuid = uuidManager.createUuid();
             	CourseSectionImpl section = new CourseSectionImpl(course, title, uuid, category, maxEnrollments, location, startTime,
-            			endTime, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+            			endTime, enterpriseManaged, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
             	session.save(section);
                 return section;
             }
@@ -631,10 +632,11 @@ public class SectionManagerHibernateImpl extends HibernateDaoSupport implements
 	 */
     public void updateSection(final String sectionUuid, final String title,
     		final Integer maxEnrollments, final String location, final Time startTime,
-    		final Time endTime, final boolean monday, final boolean tuesday,
+    		final Time endTime, String enterpriseId, final boolean monday, final boolean tuesday,
     		final boolean wednesday, final boolean thursday, final boolean friday,
     		final boolean saturday, final boolean sunday) {
-        HibernateCallback hc = new HibernateCallback(){
+       final boolean enterpriseManaged = (enterpriseId != null);
+    	HibernateCallback hc = new HibernateCallback(){
             public Object doInHibernate(Session session) throws HibernateException {
             	CourseSectionImpl section = getSection(sectionUuid, session);
             	section.setTitle(title);
@@ -649,6 +651,8 @@ public class SectionManagerHibernateImpl extends HibernateDaoSupport implements
             	section.setFriday(friday);
             	section.setSaturday(saturday);
             	section.setSunday(sunday);
+            	
+            	section.setExternallyManaged(enterpriseManaged);
             	
             	session.update(section);
             	return null;

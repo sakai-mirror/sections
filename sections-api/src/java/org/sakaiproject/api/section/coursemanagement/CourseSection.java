@@ -59,6 +59,14 @@ public interface CourseSection extends LearningContext {
      * @return
      */
     public Integer getMaxEnrollments();
+
+    /**
+     * Whether this CourseSection is managed externally, or if it was manually created
+     * and maintained inside the system.
+     * 
+     * @return
+     */
+    public boolean isExternallyManaged();
     
 	/**
 	 * Whether the CourseSection meets on Mondays.

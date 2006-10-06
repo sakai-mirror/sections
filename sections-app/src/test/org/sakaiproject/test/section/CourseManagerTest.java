@@ -54,9 +54,9 @@ public class CourseManagerTest extends SectionsTestBase {
     	Course course = courseManager.createCourse("site", "course title", false, false);
     	User student1 = userManager.createUser("userUid", "foo", "bar", "baz");
     	CourseSection section1 = sectionManager.addSection(course.getUuid(), "a section", "a category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
     	CourseSection section2 = sectionManager.addSection(course.getUuid(), "another section", "another category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
 
     	// Enroll the user in the course
     	courseManager.addEnrollment(student1, course);
@@ -74,9 +74,9 @@ public class CourseManagerTest extends SectionsTestBase {
     	Course course = courseManager.createCourse("site", "course title", false, false);
     	User ta1 = userManager.createUser("userUid", "foo", "bar", "baz");
     	CourseSection section1 = sectionManager.addSection(course.getUuid(), "a section", "a category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
     	CourseSection section2 = sectionManager.addSection(course.getUuid(), "another section", "another category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
 
     	// Enroll the user in the course
     	courseManager.addTA(ta1, course);
@@ -99,9 +99,9 @@ public class CourseManagerTest extends SectionsTestBase {
     	User student1 = userManager.createUser("userUid3", "foo3", "bar3", "baz3");
     	User student2 = userManager.createUser("userUid4", "foo4", "bar4", "baz4");
     	CourseSection section1 = sectionManager.addSection(course.getUuid(), "a section", "a category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
     	CourseSection section2 = sectionManager.addSection(course.getUuid(), "another section", "another category",
-    			null, null, null, null, false, false, false, false, false, false, false);
+    			null, null, null, null, null, false, false, false, false, false, false, false);
 
     	// Enroll the users in the course
     	courseManager.addTA(ta1, course);

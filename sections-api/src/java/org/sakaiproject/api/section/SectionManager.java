@@ -249,6 +249,7 @@ public interface SectionManager {
      * @param startTimeAm
      * @param endTime
      * @param endTimeAm
+     * @param enterpriseId Set this to a non-null enterprise id to flag this as an externallyManaged CourseSection 
      * @param monday
      * @param tuesday
      * @param wednesday
@@ -260,7 +261,7 @@ public interface SectionManager {
      */
     public CourseSection addSection(String courseUuid, String title,
     		String category, Integer maxEnrollments, String location, 
-    		Time startTime, Time endTime,
+    		Time startTime, Time endTime, String enterpriseId,
     		boolean monday, boolean tuesday, boolean wednesday, boolean thursday,
     		boolean friday, boolean saturday, boolean sunday);
 	
@@ -273,9 +274,8 @@ public interface SectionManager {
      * @param maxEnrollments
      * @param location
      * @param startTime
-     * @param startTimeAm
      * @param endTime
-     * @param endTimeAm
+     * @param enterpriseId
      * @param monday
      * @param tuesday
      * @param wednesday
@@ -285,7 +285,7 @@ public interface SectionManager {
      * @param sunday
      */
     public void updateSection(String sectionUuid, String title, Integer maxEnrollments,
-    		String location, Time startTime, Time endTime,
+    		String location, Time startTime, Time endTime, String enterpriseId,
     		boolean monday, boolean tuesday, boolean wednesday,
     		boolean thursday, boolean friday, boolean saturday, boolean sunday);
     

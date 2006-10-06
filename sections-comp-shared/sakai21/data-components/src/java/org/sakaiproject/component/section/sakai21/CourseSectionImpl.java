@@ -67,6 +67,7 @@ public class CourseSectionImpl implements CourseSection, Comparable, Serializabl
 	protected String category;
     protected String location;
     protected Integer maxEnrollments;
+    protected boolean enterpriseManaged;
 	private boolean monday;
 	private boolean tuesday;
 	private boolean wednesday;
@@ -90,6 +91,7 @@ public class CourseSectionImpl implements CourseSection, Comparable, Serializabl
 		id = group.getId();
 		uuid = group.getReference();
 		title = group.getTitle();
+		enterpriseManaged = (group.getProviderGroupId() != null);
 		course = new CourseImpl(group.getContainingSite());
 		category = props.getProperty(CourseSectionImpl.CATEGORY);
 		location = props.getProperty(CourseSectionImpl.LOCATION);
@@ -507,5 +509,13 @@ public class CourseSectionImpl implements CourseSection, Comparable, Serializabl
 	 */
 	public Group getGroup() {
 		return group;
+	}
+
+	public boolean isExternallyManaged() {
+		return enterpriseManaged;
+	}
+
+	public void setEnterpriseManaged(boolean enterpriseManaged) {
+		this.enterpriseManaged = enterpriseManaged;
 	}
 }

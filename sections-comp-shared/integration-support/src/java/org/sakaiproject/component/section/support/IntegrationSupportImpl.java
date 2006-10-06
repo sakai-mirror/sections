@@ -67,7 +67,7 @@ public class IntegrationSupportImpl extends HibernateDaoSupport implements Integ
 			String location, Time startTime, Time endTime, boolean monday, boolean tuesday,
 			boolean wednesday, boolean thursday, boolean friday, boolean saturday, boolean sunday) {
 		return sectionManager.addSection(courseUuid, title, category, maxEnrollments, location,
-				startTime, endTime, monday, tuesday, wednesday, thursday, friday,
+				startTime, endTime, null, monday, tuesday, wednesday, thursday, friday,
 				saturday, sunday);
 	}
 

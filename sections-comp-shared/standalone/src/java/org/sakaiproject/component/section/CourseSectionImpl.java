@@ -40,6 +40,8 @@ public class CourseSectionImpl extends LearningContextImpl implements CourseSect
 	protected String category;
     protected String location;
     protected Integer maxEnrollments;
+
+    protected boolean externallyManaged;
     
     // FIXME Replace this with a scheduling service
 	private boolean monday;
@@ -59,7 +61,7 @@ public class CourseSectionImpl extends LearningContextImpl implements CourseSect
 
     public CourseSectionImpl(Course course, String title, String uuid, String category,
     		Integer maxEnrollments, String location, Time startTime,
-    		Time endTime, boolean monday, boolean tuesday,
+    		Time endTime, boolean enterpriseManaged, boolean monday, boolean tuesday,
     		boolean wednesday, boolean thursday, boolean friday, boolean saturday,
     		boolean sunday) {
 		this.course = course;
@@ -70,6 +72,7 @@ public class CourseSectionImpl extends LearningContextImpl implements CourseSect
 		this.location = location;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.externallyManaged = enterpriseManaged;
 		this.monday = monday;
 		this.tuesday = tuesday;
 		this.wednesday = wednesday;
@@ -157,7 +160,13 @@ public class CourseSectionImpl extends LearningContextImpl implements CourseSect
 	public void setWednesday(boolean wednesday) {
 		this.wednesday = wednesday;
 	}
-	
+	public boolean isExternallyManaged() {
+		return externallyManaged;
+	}
+	public void setExternallyManaged(boolean enterpriseManaged) {
+		this.externallyManaged = enterpriseManaged;
+	}
+
 	/**
 	 * Compares CourseSectionImpls based on their category ID and title.  Sections
 	 * without a category are sorted last.
@@ -187,5 +196,4 @@ public class CourseSectionImpl extends LearningContextImpl implements CourseSect
 		}
 		
 	}
-
 }

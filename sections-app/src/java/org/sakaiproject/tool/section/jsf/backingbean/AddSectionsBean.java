@@ -146,7 +146,7 @@ public class AddSectionsBean extends CourseDependentBean implements Serializable
 					category, sectionModel.getMaxEnrollments(), sectionModel.getLocation(),
 					JsfUtil.convertStringToTime(sectionModel.getStartTime(), Boolean.valueOf(sectionModel.getStartTimeAm()).booleanValue()),
 					JsfUtil.convertStringToTime(sectionModel.getEndTime(), Boolean.valueOf(sectionModel.getEndTimeAm()).booleanValue()),
-					sectionModel.isMonday(), sectionModel.isTuesday(), sectionModel.isWednesday(),
+					null, sectionModel.isMonday(), sectionModel.isTuesday(), sectionModel.isWednesday(),
 					sectionModel.isThursday(), sectionModel.isFriday(), sectionModel.isSaturday(),
 					sectionModel.isSunday());
 		}

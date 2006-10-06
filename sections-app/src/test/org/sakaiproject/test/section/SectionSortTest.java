@@ -70,17 +70,17 @@ public class SectionSortTest extends TestCase {
 		sectionA = new CourseSectionImpl(course, "a section",
 				"a section uuid", "a category", new Integer(10), "a section location",
 				new Time(startCal.getTimeInMillis()), new Time(endCal.getTimeInMillis()),
-				false, false, false, false, false, false, false);
+				false, false, false, false, false, false, false, false);
 
 		sectionB = new CourseSectionImpl(course, "B section",
 				"b section uuid", "a category", new Integer(20), "b section location",
 				new Time(startCal.getTimeInMillis()), new Time(endCal.getTimeInMillis()),
-				false, false, false, false, false, false, false);
+				false, false, false, false, false, false, false, false);
 
 		sectionC = new CourseSectionImpl(course, "c section",
 				"c section uuid", "b category", new Integer(5), "c section location",
 				new Time(startCal.getTimeInMillis()), new Time(endCal.getTimeInMillis()),
-				false, false, false, false, false, false, false);
+				false, false, false, false, false, false, false, false);
 		
 		startCal.set(Calendar.HOUR_OF_DAY, 9);
 		endCal.set(Calendar.HOUR_OF_DAY, 10);
@@ -88,7 +88,7 @@ public class SectionSortTest extends TestCase {
 		sectionD = new CourseSectionImpl(course, "D section",
 				"d section uuid", "b category", new Integer(15), "d section location",
 				new Time(startCal.getTimeInMillis()), new Time(endCal.getTimeInMillis()),
-				false, false, false, false, false, false, false);
+				false, false, false, false, false, false, false, false);
 		
 		instructorsA = new ArrayList();
 		instructorsA.add("Schmoe, Joe");

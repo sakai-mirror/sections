@@ -174,7 +174,7 @@ public class EditSectionBean extends CourseDependentBean implements Serializable
 		// Perform the update
 		getSectionManager().updateSection(sectionUuid, title, maxEnrollments,
 				location, JsfUtil.convertStringToTime(startTime, startTimeAm),
-				JsfUtil.convertStringToTime(endTime, endTimeAm), monday, tuesday,
+				JsfUtil.convertStringToTime(endTime, endTimeAm), null, monday, tuesday,
 				wednesday, thursday, friday, saturday, sunday);
 		
 		// Add a success message

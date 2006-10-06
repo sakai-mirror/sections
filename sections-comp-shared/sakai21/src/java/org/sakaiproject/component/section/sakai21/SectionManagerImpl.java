@@ -707,7 +707,7 @@ public class SectionManagerImpl implements SectionManager {
     public CourseSection addSection(String courseUuid, String title,
     		String category, Integer maxEnrollments,
     		String location, Time startTime,
-    		Time endTime, boolean monday,
+    		Time endTime, String enterpriseId, boolean monday,
     		boolean tuesday, boolean wednesday, boolean thursday,
     		boolean friday, boolean saturday, boolean sunday) {
     	Reference ref = entityManager.newReference(courseUuid);
@@ -720,6 +720,9 @@ public class SectionManagerImpl implements SectionManager {
     		return null;
     	}
     	Group group = site.addGroup();
+    	if(enterpriseId != null) {
+    		group.setProviderGroupId(enterpriseId);
+    	}
     	
     	// Construct a CourseSection to generate the description
     	CourseSectionImpl courseSection = new CourseSectionImpl(group);
@@ -747,8 +750,8 @@ public class SectionManagerImpl implements SectionManager {
 	 * @inheritDoc
 	 */
     public void updateSection(String sectionUuid, String title,
-    		Integer maxEnrollments, String location, Time startTime,
-    		Time endTime, boolean monday, boolean tuesday,
+    		Integer maxEnrollments, String location, Time startTime, Time endTime,
+    		String enterpriseId, boolean monday, boolean tuesday,
     		boolean wednesday, boolean thursday, boolean friday,
     		boolean saturday, boolean sunday) {
     	CourseSectionImpl section = (CourseSectionImpl)getSection(sectionUuid);
@@ -764,6 +767,7 @@ public class SectionManagerImpl implements SectionManager {
     	// Decorate the framework section
     	Group group = siteService.findGroup(sectionUuid);
     	section.decorateSection(group);
+    	group.setProviderGroupId(enterpriseId);
 
     	// Save the site with its new section
     	try {

@@ -53,7 +53,7 @@ public interface IntegrationSupport {
 			boolean selfRegistrationAllowed, boolean selfSwitchingAllowed);
 	
 	/**
-	 * Creates a new section.
+	 * Creates a new manually-controlled section.
 	 * 
 	 * @param courseUuid
 	 * @param title

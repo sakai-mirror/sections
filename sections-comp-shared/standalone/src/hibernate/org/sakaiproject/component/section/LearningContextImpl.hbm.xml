@@ -21,7 +21,6 @@
         <joined-subclass name="org.sakaiproject.component.section.CourseImpl" table="SEC_COURSE_T">
             <key column="ID"/>
             <property name="siteContext" column="SITE_CONTEXT" type="string" not-null="true" unique="true"/>
-            <property name="externallyManaged" column="EXTERNAL_MGMT" type="boolean"/>
             <property name="selfRegistrationAllowed" column="SELF_REG" type="boolean" />
             <property name="selfSwitchingAllowed" column="SELF_SWITCH" type="boolean" />
         </joined-subclass>
@@ -29,6 +28,7 @@
         <joined-subclass name="org.sakaiproject.component.section.CourseSectionImpl" table="SEC_SECTION_T">
             <key column="ID"/>
             <many-to-one name="course" column="COURSE_ID" class="org.sakaiproject.component.section.CourseImpl"/>
+            <property name="externallyManaged" column="EXTERNAL_MGMT" type="boolean"/>
             <property name="location" column="LOCATION" type="string"/>
             <property name="category" column="CATEGORY" type="string"/>
             <property name="maxEnrollments" column="MAX_ENROLLMENTS" type="java.lang.Integer"/>
