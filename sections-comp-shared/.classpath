@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="sakai21/src/java"/>
-	<classpathentry kind="src" path="sakai21/src/conf"/>
-	<classpathentry kind="src" path="sakai21/data-components/src/java"/>
-	<classpathentry kind="src" path="sakai21/data-components/src/conf"/>
-	<classpathentry kind="src" path="sakai21/component-webapp/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="sakai/data-components/src/java"/>
+	<classpathentry kind="src" path="sakai/src/conf"/>
+	<classpathentry kind="src" path="sakai/src/java"/>
+	<classpathentry kind="src" path="sakai/data-components/src/conf"/>
+	<classpathentry kind="src" path="sakai/component-webapp/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="standalone/src/java"/>
 	<classpathentry kind="src" path="standalone/src/conf"/>
 	<classpathentry kind="src" path="standalone/src/hibernate"/>
