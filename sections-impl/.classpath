@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="sakai/data-components/src/java"/>
+	<classpathentry kind="src" path="sakai/pack/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="integration-test/src/test"/>
+	<classpathentry kind="src" path="sakai/model/src/conf"/>
+	<classpathentry kind="src" path="sakai/model/src/java"/>
 	<classpathentry kind="src" path="sakai/src/conf"/>
 	<classpathentry kind="src" path="sakai/src/java"/>
-	<classpathentry kind="src" path="sakai/data-components/src/conf"/>
-	<classpathentry kind="src" path="sakai/component-webapp/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="standalone/src/java"/>
 	<classpathentry kind="src" path="standalone/src/conf"/>
 	<classpathentry kind="src" path="standalone/src/hibernate"/>
 	<classpathentry kind="src" path="integration-support/src/java"/>
 	<classpathentry kind="src" path="integration-support/src/conf"/>
 	<classpathentry kind="src" path="integration-support/src/test"/>
-	<classpathentry kind="src" path="sections-integration-test/src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
