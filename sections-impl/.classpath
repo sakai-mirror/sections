@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="sakai/pack/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="integration-test/src/java"/>
 	<classpathentry kind="src" path="sakai/impl/src/java"/>
-	<classpathentry kind="src" path="sakai/impl/src/conf"/>
 	<classpathentry kind="src" path="integration-test/src/test"/>
 	<classpathentry kind="src" path="sakai/model/src/conf"/>
 	<classpathentry kind="src" path="sakai/model/src/java"/>
