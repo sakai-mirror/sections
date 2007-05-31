@@ -33,5 +33,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cm-api"/>
 	<classpathentry kind="var" path="MAVEN_REPO/myfaces/jars/myfaces-api-1.1.5.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jobscheduler"/>
+	<classpathentry kind="var" path="MAVEN_REPO/quartz/jars/quartz-1.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
