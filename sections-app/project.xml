@@ -250,16 +250,32 @@
 		</dependency>
 
 <!-- MyFaces JSF -->
+<!-- MyFaces JSF -->
 		<dependency>
 			<groupId>myfaces</groupId>
-			<artifactId>myfaces-all</artifactId>
+			<artifactId>myfaces-api</artifactId>
 			<version>1.1.1</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+		<dependency>
+			<groupId>myfaces</groupId>
+			<artifactId>myfaces-impl</artifactId>
+			<version>1.1.1</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+		<dependency>
+			<groupId>myfaces</groupId>
+			<artifactId>tomahawk</artifactId>
+			<version>1.1.6</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
 
-	<!--  New for myfaces 1.1.1 update -->
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
