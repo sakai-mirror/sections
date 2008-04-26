@@ -129,7 +129,9 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
 				if(log.isDebugEnabled()) log.debug("can not parse integer property for " + CourseSectionImpl.MAX_ENROLLMENTS);
 			}
 		}
-		
+/*
+  		// TODO - lazy initialization or remove this method
+  		 *  
 		// Get the EID from the group.  If the EID property exists, use it.  If it doesn't
 		// exist, but the group has a provider ID, copy the provider ID to the EID field.
 		String groupEid = StringUtils.trimToNull(props.getProperty(CourseSectionImpl.EID));
@@ -144,7 +146,7 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
 		} else {
 			this.eid = groupEid;
 		}
-
+*/
 		// Parse the meetings for this group. Use a field that can't be null, such as "monday" (which must be T/F)
 		long numMeetings = 0;
 		String mondays = props.getProperty(CourseSectionImpl.MONDAY);

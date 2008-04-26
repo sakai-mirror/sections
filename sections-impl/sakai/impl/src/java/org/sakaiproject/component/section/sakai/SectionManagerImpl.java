@@ -364,7 +364,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 			return new ArrayList<CourseSection>();
 		}
 		for(Iterator iter = sections.iterator(); iter.hasNext();) {
-			Group group = findGroup( ((Group) (Group)iter.next()).getReference());
+			Group group = (Group)iter.next();
 			// Only use groups with a category defined.  If there is no category,
 			// it is not a section.
 			if(StringUtils.trimToNull(
@@ -495,7 +495,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		List<ParticipationRecord> membersList = new ArrayList<ParticipationRecord>();
 		for(Iterator iter = sakaiUsers.iterator(); iter.hasNext();) {
 			User user = SakaiUtil.convertUser((org.sakaiproject.user.api.User) iter.next());
-			TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(section, user);
+			TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
 			membersList.add(record);
 		}
 		return membersList;
@@ -1483,6 +1483,58 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		return unsectionedEnrollments;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map getEnrollmentCount(List sectionSet) {
+		ArrayList<String> siteGroupRefs = new ArrayList<String>(sectionSet.size());
+		
+		for(Iterator sectionIter = sectionSet.iterator(); sectionIter.hasNext();) {
+			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();			
+			siteGroupRefs.add(section.getGroup().getReference()); 
+		}		
+		
+		return authzGroupService.getUserCountIsAllowed(SectionAwareness.STUDENT_MARKER, siteGroupRefs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String,List<ParticipationRecord>> getSectionTeachingAssistantsMap(List sectionSet)
+	{
+		ArrayList<String> siteGroupRefs = new ArrayList<String>(sectionSet.size());
+		Map<String,List<ParticipationRecord>> sectionTaMap = new HashMap<String,List<ParticipationRecord>>();
+		
+		// Iterate through sections and create an empty TA set for each
+		for(Iterator sectionIter = sectionSet.iterator(); sectionIter.hasNext();) {
+			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();			
+			siteGroupRefs.add(section.getGroup().getReference());
+			
+			List<ParticipationRecord> membersList = new ArrayList<ParticipationRecord>();
+			sectionTaMap.put(section.getGroup().getReference(), membersList);
+		}		
+
+		Set usersbygroup = authzGroupService.getUsersIsAllowedByGroup(SectionAwareness.TA_MARKER, siteGroupRefs);
+		for (Iterator iterator = usersbygroup.iterator(); iterator.hasNext();) {  
+		     String[] entry = (String[]) iterator.next();
+		     
+		     String sectionUuid = entry[0];
+		     String useruid = entry[1];
+		     
+		     List<ParticipationRecord> membersList = sectionTaMap.get(sectionUuid);
+		     
+		     org.sakaiproject.user.api.User sakaiUser = userDirectoryService.getUser(useruid);
+		     User user = SakaiUtil.convertUser(sakaiUser);
+		     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(course, user);
+		     membersList.add(record);					
+		  } 
+		
+		// Iterate through user/group pairs and add to the Map
+		
+
+		return sectionTaMap;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
