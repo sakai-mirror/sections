@@ -495,7 +495,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		List<ParticipationRecord> membersList = new ArrayList<ParticipationRecord>();
 		for(Iterator iter = sakaiUsers.iterator(); iter.hasNext();) {
 			User user = SakaiUtil.convertUser((org.sakaiproject.user.api.User) iter.next());
-			TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
+			TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(section, user);
 			membersList.add(record);
 		}
 		return membersList;
@@ -1525,7 +1525,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		     
 		     org.sakaiproject.user.api.User sakaiUser = userDirectoryService.getUser(useruid);
 		     User user = SakaiUtil.convertUser(sakaiUser);
-		     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(course, user);
+		     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
 		     membersList.add(record);					
 		  } 
 		
