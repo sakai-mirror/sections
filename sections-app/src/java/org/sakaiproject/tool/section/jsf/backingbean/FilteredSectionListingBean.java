@@ -50,6 +50,9 @@ public abstract class FilteredSectionListingBean extends CourseDependentBean imp
 	protected boolean siteWithoutSections;
 
 	public void init() {
+		
+		if (log.isDebugEnabled()) log.debug("FilteredSectionListingBean init()");
+		
 		setDefaultPrefs();
 		// Get the filter settings
 		String categoryFilter = getCategoryFilter();
