@@ -1034,6 +1034,13 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	
 	protected static final String GRP_PREFIX = "section_grp_";
 	protected Group findGroup(String learningContextUuid) {
+		
+		if(log.isDebugEnabled()) {
+		 // temporary to find out where this is being called
+		 Throwable ex = new Throwable();
+		 log.debug("findGroup called", ex);
+		}
+		
 		Group grp = (Group)threadLocalManager.get(GRP_PREFIX + learningContextUuid);
 		if(grp == null) {
 			if(log.isDebugEnabled()) log.debug("Looking up group " + learningContextUuid + " from the site service");
