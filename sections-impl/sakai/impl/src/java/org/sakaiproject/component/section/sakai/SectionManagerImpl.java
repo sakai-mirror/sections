@@ -1515,6 +1515,8 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		}		
 
 		Set usersbygroup = authzGroupService.getUsersIsAllowedByGroup(SectionAwareness.TA_MARKER, siteGroupRefs);
+		
+		// Iterate through user/group pairs and add to the Map
 		for (Iterator iterator = usersbygroup.iterator(); iterator.hasNext();) {  
 		     String[] entry = (String[]) iterator.next();
 		     
@@ -1523,15 +1525,16 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		     
 		     List<ParticipationRecord> membersList = sectionTaMap.get(sectionUuid);
 		     
-		     org.sakaiproject.user.api.User sakaiUser = userDirectoryService.getUser(useruid);
-		     User user = SakaiUtil.convertUser(sakaiUser);
-		     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
-		     membersList.add(record);					
+		     try {
+		    	 org.sakaiproject.user.api.User sakaiUser = userDirectoryService.getUser(useruid);
+			     User user = SakaiUtil.convertUser(sakaiUser);
+			     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
+			     membersList.add(record);					
+		     } catch (UserNotDefinedException ex) {
+		    	 if (log.isDebugEnabled()) log.debug("Userid " + useruid + " found in group " + sectionUuid + " does not exist");
+		     }
 		  } 
 		
-		// Iterate through user/group pairs and add to the Map
-		
-
 		return sectionTaMap;
 	}
 	
