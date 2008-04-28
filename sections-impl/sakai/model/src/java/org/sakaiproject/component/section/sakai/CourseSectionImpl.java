@@ -71,6 +71,8 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
     protected String title;
     protected String eid;
     
+    protected boolean lazy_eid = false;
+    
     // Transient holder for the framework group being decorated.
     private transient Group group;
     
@@ -129,24 +131,7 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
 				if(log.isDebugEnabled()) log.debug("can not parse integer property for " + CourseSectionImpl.MAX_ENROLLMENTS);
 			}
 		}
-/*
-  		// TODO - lazy initialization or remove this method
-  		 *  
-		// Get the EID from the group.  If the EID property exists, use it.  If it doesn't
-		// exist, but the group has a provider ID, copy the provider ID to the EID field.
-		String groupEid = StringUtils.trimToNull(props.getProperty(CourseSectionImpl.EID));
-		if(groupEid == null) {
-			// Try the provider ID
-			String providerId = StringUtils.trimToNull(group.getProviderGroupId());
-			if(providerId != null) {
-				// There is a provider id, so update the group and this section
-				props.addProperty(CourseSectionImpl.EID, providerId);
-				this.eid = providerId;
-			}
-		} else {
-			this.eid = groupEid;
-		}
-*/
+		
 		// Parse the meetings for this group. Use a field that can't be null, such as "monday" (which must be T/F)
 		long numMeetings = 0;
 		String mondays = props.getProperty(CourseSectionImpl.MONDAY);
@@ -439,11 +424,32 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
 	}
 
 	public String getEid() {
+
+		if (!lazy_eid) {
+			// Get the EID from the group.  If the EID property exists, use it.  If it doesn't
+			// exist, but the group has a provider ID, copy the provider ID to the EID field.
+			String groupEid = StringUtils.trimToNull(props.getProperty(CourseSectionImpl.EID));
+			if(groupEid == null) {
+				// Try the provider ID
+				String providerId = StringUtils.trimToNull(group.getProviderGroupId());
+				if(providerId != null) {
+					// There is a provider id, so update the group and this section
+					props.addProperty(CourseSectionImpl.EID, providerId);
+					this.eid = providerId;
+				}
+			} else {
+				this.eid = groupEid;
+			}
+			
+			lazy_eid = true;
+		}
+		
 		return eid;
 	}
 
 	public void setEid(String eid) {
 		this.eid = eid;
+		lazy_eid = true;
 	}
 
 	public String getDescription() {
