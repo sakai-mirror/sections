@@ -428,6 +428,7 @@ public class CourseSectionImpl implements CourseSection, Comparable<CourseSectio
 		if (!lazy_eid) {
 			// Get the EID from the group.  If the EID property exists, use it.  If it doesn't
 			// exist, but the group has a provider ID, copy the provider ID to the EID field.
+			ResourceProperties props = group.getProperties();
 			String groupEid = StringUtils.trimToNull(props.getProperty(CourseSectionImpl.EID));
 			if(groupEid == null) {
 				// Try the provider ID
