@@ -1480,7 +1480,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Get all userUids of students enrolled in sections of this category
 		
 		List<String> sectionedStudentUids = new ArrayList<String>();
-		List categorySections = getSectionIdsInCategory(siteId, category);
+		List<String> categorySections = getSectionIdsInCategory(siteId, category);
 		
 		Set usersbygroup = authzGroupService.getUsersIsAllowedByGroup(SectionAwareness.STUDENT_MARKER, categorySections);
 		
