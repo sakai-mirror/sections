@@ -1546,8 +1546,8 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		for (Iterator iterator = usersbygroup.iterator(); iterator.hasNext();) {  
 		     String[] entry = (String[]) iterator.next();
 		     
-		     String sectionUuid = entry[0];
-		     String useruid = entry[1];
+		     String useruid = entry[0];
+		     String sectionUuid = entry[1];		     
 		     
 		     List<ParticipationRecord> membersList = sectionTaMap.get(sectionUuid);
 		     
