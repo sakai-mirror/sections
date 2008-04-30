@@ -1087,6 +1087,9 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		return site;
 	}
 
+	protected void clearSite(String learningContextUuid) {
+		threadLocalManager.set(SITE_PREFIX + learningContextUuid, null);
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -1227,6 +1230,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Save the site, along with the new section
 		try {
 			siteService().save(site);
+			clearSite(ref.getId());
 			for(Iterator<CourseSection> iter = sections.iterator(); iter.hasNext();) {
 				postEvent("section.add", iter.next().getUuid());
 			}
