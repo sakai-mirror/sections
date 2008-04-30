@@ -1283,6 +1283,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Save the site with its new section
 		try {
 			siteService().save(group.getContainingSite());
+			clearSite(group.getContainingSite().getId());
 			postEvent("section.update", sectionUuid);
 		} catch (IdUnusedException ide) {
 			log.error("Error saving site... could not find site for section " + group, ide);
@@ -1341,6 +1342,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 		try {
 			siteService().save(site);
+			clearSite(site.getId());
 			for(Iterator<String> iter = sectionUuids.iterator(); iter.hasNext();) {
 				String sectionUuid = iter.next();
 				postEvent("section.disband", sectionUuid);
@@ -1393,6 +1395,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 		try {
 			siteService().save(site);
+			clearSite(ref.getId());
 			if(log.isDebugEnabled()) log.debug("Saved site " + site.getTitle());
 			postEvent("section.external=" + externallyManaged, site.getReference());
 		} catch (IdUnusedException ide) {
@@ -1441,6 +1444,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		props.addProperty(CourseImpl.STUDENT_SWITCHING_ALLOWED, Boolean.toString(switchAllowed));
 		try {
 			siteService().save(site);
+			clearSite(site.getId());
 			if(joinAllowed != oldJoin) {
 				postEvent("section.student.reg=" + joinAllowed, site.getReference());
 			}
