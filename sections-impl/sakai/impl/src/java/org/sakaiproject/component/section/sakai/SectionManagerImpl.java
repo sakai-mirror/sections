@@ -35,6 +35,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.thread_local.api.ThreadLocalManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.section.api.SectionAwareness;
 import org.sakaiproject.section.api.SectionManager;
@@ -99,6 +100,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
     protected EntityManager entityManager;
     protected EventTrackingService eventTrackingService;
 	protected CourseManagementService courseManagementService;
+	protected ThreadLocalManager threadLocalManager;
 
     // Configuration setting
     protected ExternalIntegrationConfig config;
@@ -356,7 +358,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		List<CourseSection> sectionList = new ArrayList<CourseSection>();
 		Collection sections;
 		try {
-			sections = siteService().getSite(siteContext).getGroups();
+			sections = getSite(siteContext).getGroups();
 		} catch (IdUnusedException e) {
 			log.error("No site with id = " + siteContext);
 			return new ArrayList<CourseSection>();
@@ -372,7 +374,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		}
 		return sectionList;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -381,7 +383,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		List<CourseSection> sectionList = new ArrayList<CourseSection>();
 		Collection sections;
 		try {
-			sections = siteService().getSite(siteContext).getGroups();
+			sections = getSite(siteContext).getGroups();
 		} catch (IdUnusedException e) {
 			log.error("No site with id = " + siteContext);
 			return new ArrayList<CourseSection>();
@@ -395,12 +397,40 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		return sectionList;
 	}
 
+	
+	/**
+	 * Like getSectionsInCategory but returns ids which are more useful to other methods 
+	 * 
+	 * @param siteContext The site context
+     * @param categoryId
+     *
+     * @return A List of section uuids
+	 */
+	private List<String> getSectionIdsInCategory(String siteContext, String categoryId) {
+		if(log.isDebugEnabled()) log.debug("Getting " + categoryId + " sections for context " + siteContext);
+		List<String> sectionList = new ArrayList<String>();
+		Collection sections;
+		try {
+			sections = getSite(siteContext).getGroups();
+		} catch (IdUnusedException e) {
+			log.error("No site with id = " + siteContext);
+			return sectionList;
+		}
+		for(Iterator iter = sections.iterator(); iter.hasNext();) {
+			Group group = (Group)iter.next();
+			if(categoryId.equals(group.getProperties().getProperty(CourseSectionImpl.CATEGORY))) {
+				sectionList.add(group.getReference());
+			}
+		}
+		return sectionList;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public CourseSection getSection(String sectionUuid) {
 		Group group;
-		group = siteService().findGroup(sectionUuid);
+		group = findGroup(sectionUuid);
 		if(group == null) {
 			log.error("Unable to find section " + sectionUuid);
 			return null;
@@ -475,7 +505,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	 * {@inheritDoc}
 	 */
 	public List<ParticipationRecord> getSectionTeachingAssistants(String sectionUuid) {
-		Group group = siteService().findGroup(sectionUuid);
+		Group group = findGroup(sectionUuid);
 		CourseSection section = getSection(sectionUuid);
 		if(section == null) {
 			return new ArrayList<ParticipationRecord>();
@@ -503,7 +533,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	 * {@inheritDoc}
 	 */
 	public List<EnrollmentRecord> getSectionEnrollments(String sectionUuid) {
-		Group group = siteService().findGroup(sectionUuid);
+		Group group = findGroup(sectionUuid);
 		CourseSection section = getSection(sectionUuid);
 		if(section == null) {
 			return new ArrayList<EnrollmentRecord>();
@@ -568,7 +598,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		if(log.isDebugEnabled()) log.debug("Getting course for context " + siteContext);
 		Site site;
 		try {
-			site = siteService().getSite(siteContext);
+			site = getSite(siteContext);
 		} catch (IdUnusedException e) {
 			log.error("Could not find site with id = " + siteContext);
 			return null;
@@ -633,24 +663,27 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	public EnrollmentRecord joinSection(String sectionUuid, int maxSize) throws RoleConfigurationException, SectionFullException {
 		CourseSection section = getSection(sectionUuid);
 		
-		// Disallow if we're in an externally managed site
-		ensureInternallyManaged(section.getCourse().getUuid());
-
 		// It's possible that this section has been deleted
 		if(section == null) {
 			log.info("Section " + sectionUuid + " has been deleted, so it can't be joined.");
 			return null;
 		}
 
+		// Disallow if we're in an externally managed site
+		ensureInternallyManaged(section.getCourse().getUuid());
+		
 		// Don't let users join multiple sections in the same category
-		List categorySections = getSectionsInCategory(section.getCourse().getSiteContext(), section.getCategory());
-		for(Iterator iter = categorySections.iterator(); iter.hasNext();) {
-			CourseSection testSection = (CourseSection)iter.next();
-			String userUid = userDirectoryService.getCurrentUser().getId();
-			if(this.isMember(userUid, testSection)) {
-				log.info("User " + userUid + " can not enroll in section " + sectionUuid + ".  This user is already in section " + testSection.getUuid());
-				return null;
-			}
+		ArrayList categorySections = (ArrayList) getSectionIdsInCategory(section.getCourse().getSiteContext(), section.getCategory());
+		String userUid = userDirectoryService.getCurrentUser().getId();
+		
+		// We are not checking the user's role here, but if the user is attempting to join a section
+		// in this category as a student, then the user's role in any existing category in this section
+		// must be the same
+		List membershipInCategory = authzGroupService.getAuthzUserGroupIds(categorySections, userUid);
+		
+		if (!membershipInCategory.isEmpty()) {
+			log.info("User " + userUid + " can not enroll in section " + sectionUuid + ".  This user is already in section " + membershipInCategory.get(0));
+			return null;
 		}
 
 		return joinSection(section, maxSize);
@@ -661,7 +694,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	 */
 	private EnrollmentRecord joinSection(CourseSection section, int maxSize) throws RoleConfigurationException, SectionFullException {
 		
-		Group group = siteService().findGroup(section.getUuid());
+		Group group = findGroup(section.getUuid());
 		String role = getSectionStudentRole(group);
 		try {
 			authzGroupService.joinGroup(section.getUuid(), role, maxSize);
@@ -679,6 +712,9 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Return the membership record that the app understands
 		String userUid = sessionManager.getCurrentSessionUserId();
 		User user = SakaiUtil.getUserFromSakai(userUid);
+		
+		// Remove from thread local cache
+		clearGroup(section.getUuid());
 		
 		return new EnrollmentRecordImpl(section, null, user);
 	}
@@ -733,28 +769,17 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	 * {@inheritDoc}
 	 */
 	public void switchSection(String newSectionUuid, int maxSize) throws RoleConfigurationException, SectionFullException {
-		// Disallow if we're in an externally managed site
-		ensureInternallyManaged(getSection(newSectionUuid).getCourse().getUuid());
-
 		CourseSection newSection = getSection(newSectionUuid);
 
 		// It's possible that this section has been deleted
 		if(newSection == null) {
 			return;
 		}
-		
-		// Disallow if we're in an externally managed site
-		if(isExternallyManaged(newSection.getCourse().getUuid())) {
-			log.warn("Can not switch sections in an externally managed site");
-			return;
-		}
 
-		String userUid = sessionManager.getCurrentSessionUserId();
+		// Disallow if we're in an externally managed site
+		ensureInternallyManaged(newSection.getCourse().getUuid());
 		
-		// Remove any section membership for a section of the same category.
-		// We can not use dropEnrollmentFromCategory because security checks won't
-		// allow a student to update the authZ groups directly.
-		List categorySections = getSectionsInCategory(newSection.getCourse().getSiteContext(), newSection.getCategory());
+		String userUid = sessionManager.getCurrentSessionUserId();
 		
 		// Join the new section (could fail if it has filled up since the UI check)
 		try {
@@ -765,27 +790,33 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 			throw new SectionFullException("section full");
 		}
 
+		// Find out which sections in this category the student belongs to (should be only one)
+		ArrayList categorySections = (ArrayList) getSectionIdsInCategory(newSection.getCourse().getSiteContext(), newSection.getCategory());
+		List membershipInCategory = authzGroupService.getAuthzUserGroupIds(categorySections, userUid);
+		
+		// Remove any section membership for a section of the same category.
+		// We can not use dropEnrollmentFromCategory because security checks won't
+		// allow a student to update the authZ groups directly.
 		boolean errorDroppingSection = false;
 		
 		String oldSectionUuid = null;
-		for(Iterator iter = categorySections.iterator(); iter.hasNext();) {
-			CourseSection section = (CourseSection)iter.next();
+		for(Iterator iter = membershipInCategory.iterator(); iter.hasNext();) {
+			
+			String sectionUuid = (String) iter.next();
+			
 			// Skip the current section
-			if(section.getUuid().equals(newSectionUuid)) {
+			if(sectionUuid.equals(newSectionUuid)) {
 				continue;
 			}
-			if(this.isMember(userUid, section)) {
-				oldSectionUuid = section.getUuid();
-				try {
-					authzGroupService.unjoinGroup(section.getUuid());
-					oldSectionUuid = section.getUuid();
-				} catch (GroupNotDefinedException e) {
-					errorDroppingSection = true;
-					log.error("There is not authzGroup with id " + section.getUuid());
-				} catch (AuthzPermissionException e) {
-					errorDroppingSection = true;
-					log.error("Permission denied while " + userUid + " attempted to unjoin authzGroup " + section.getUuid());
-				}
+			try {
+				authzGroupService.unjoinGroup(sectionUuid);
+				oldSectionUuid = sectionUuid;
+			} catch (GroupNotDefinedException e) {
+				errorDroppingSection = true;
+				log.error("There is no authzGroup with id " + sectionUuid);
+			} catch (AuthzPermissionException e) {
+				errorDroppingSection = true;
+				log.error("Permission denied while " + userUid + " attempted to unjoin authzGroup " + sectionUuid);
 			}
 		}
 
@@ -997,7 +1028,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Get the sections in this category
 		Site site;
 		try {
-			site = siteService().getSite(siteContext);
+			site = getSite(siteContext);
 		} catch (IdUnusedException ide) {
 			log.error("Unable to find site " + siteContext);
 			return;
@@ -1026,26 +1057,54 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 			return;
 		}
 	}
+	
+	protected static final String GRP_PREFIX = "section_grp_";
+	protected Group findGroup(String learningContextUuid) {
+		
+		if(log.isDebugEnabled()) log.debug("findGroup called for " + learningContextUuid);
+				
+		Group grp = (Group)threadLocalManager.get(GRP_PREFIX + learningContextUuid);
+		if(grp == null) {
+			if(log.isDebugEnabled()) log.debug("Looking up group " + learningContextUuid + " from the site service");
+			grp = siteService().findGroup(learningContextUuid);
+			threadLocalManager.set(GRP_PREFIX + learningContextUuid, grp);
+		}
+		return grp;
+	}
+	
+	protected void clearGroup(String learningContextUuid) {
+		threadLocalManager.set(GRP_PREFIX + learningContextUuid, null);
+	}
+	
+	protected static final String SITE_PREFIX = "section_site_";
+	protected Site getSite(String siteId) throws IdUnusedException {
+		Site site = (Site)threadLocalManager.get(SITE_PREFIX + siteId);
+		if(site == null) {
+			if(log.isDebugEnabled()) log.debug("Looking up site " + siteId + " from the site service");
+			site = siteService().getSite(siteId);
+			threadLocalManager.set(SITE_PREFIX + siteId, site);
+		}
+		return site;
+	}
 
+	protected void clearSite(String learningContextUuid) {
+		threadLocalManager.set(SITE_PREFIX + learningContextUuid, null);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public int getTotalEnrollments(String learningContextUuid) {
-		AuthzGroup authzGroup;
-		try {
-			authzGroup = authzGroupService.getAuthzGroup(learningContextUuid);
-		} catch (GroupNotDefinedException e) {
-			log.error("learning context " + learningContextUuid + " is neither a site nor a section");
+		
+		Group group = findGroup(learningContextUuid); 
+		
+		if (group == null) {
+			log.error("learning context " + learningContextUuid + " not found");
 			return 0;
 		}
-		String studentRole;
-		try {
-			studentRole = getSectionStudentRole(authzGroup);
-		} catch (RoleConfigurationException rce) {
-			log.warn("Can't get total enrollments, since there is no single student-flagged role in " + learningContextUuid);
-			return 0;
-		}
-		Set users = authzGroup.getUsersHasRole(studentRole);
+
+		Set users = group.getUsersIsAllowed(SectionAwareness.STUDENT_MARKER);
+		
 		return users.size();
 	}
 
@@ -1057,27 +1116,16 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 		Map roleMap = new HashMap<Role, Integer>();
 
-		AuthzGroup authzGroup;
-		try {
-			authzGroup = authzGroupService.getAuthzGroup(learningContextUuid);
-		} catch (GroupNotDefinedException e) {
+		Group group = findGroup(learningContextUuid); 
+
+		if (group == null) {
 			log.error("learning context " + learningContextUuid + " is neither a site nor a section");
 			return roleMap;
 		}
 
-		String studentRole, taRole, instructorRole;
-		try {
-			studentRole = getSectionStudentRole(authzGroup);
-			taRole = getSectionTaRole(authzGroup);
-			instructorRole = getSectionInstructorRole(authzGroup);
-		} catch (RoleConfigurationException rce) {
-			log.warn("Can't get total enrollments map, since one of the student, TA or Instructor-flagged roles occurs more than once in " + learningContextUuid);
-			return roleMap;
-		}
-		
-        roleMap.put(Role.STUDENT, authzGroup.getUsersHasRole(studentRole).size());
-        roleMap.put(Role.TA, authzGroup.getUsersHasRole(taRole).size());
-        roleMap.put(Role.INSTRUCTOR, authzGroup.getUsersHasRole(instructorRole).size());
+        roleMap.put(Role.STUDENT, group.getUsersIsAllowed(SectionAwareness.STUDENT_MARKER).size());
+        roleMap.put(Role.TA, group.getUsersIsAllowed(SectionAwareness.TA_MARKER).size());
+        roleMap.put(Role.INSTRUCTOR, group.getUsersIsAllowed(SectionAwareness.INSTRUCTOR_MARKER).size());
         return roleMap;
 	}
 
@@ -1096,7 +1144,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		Reference ref = entityManager.newReference(courseUuid);
 		Site site;
 		try {
-			site = siteService().getSite(ref.getId());
+			site = getSite(ref.getId());
 		} catch (IdUnusedException e) {
 			log.error("Unable to find site " + courseUuid);
 			return null;
@@ -1163,7 +1211,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		Reference ref = entityManager.newReference(courseUuid);
 		Site site;
 		try {
-			site = siteService().getSite(ref.getId());
+			site = getSite(ref.getId());
 		} catch (IdUnusedException e) {
 			log.error("Unable to find site " + courseUuid);
 			return null;
@@ -1182,7 +1230,10 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		// Save the site, along with the new section
 		try {
 			siteService().save(site);
-			for(Iterator<CourseSection> iter = addedSections.iterator(); iter.hasNext();) {
+
+		clearSite(ref.getId());	
+	               for(Iterator<CourseSection> iter = addedSections.iterator(); iter.hasNext();) {
+
 				postEvent("section.add", iter.next().getUuid());
 			}
 			return addedSections;
@@ -1213,14 +1264,14 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	}
 
 	public void updateSection(String sectionUuid, String title, Integer maxEnrollments, List<Meeting> meetings) {
-		// Disallow if we're in an externally managed site
-		ensureInternallyManaged(getSection(sectionUuid).getCourse().getUuid());
-
 		CourseSectionImpl section = (CourseSectionImpl)getSection(sectionUuid);
 		
 		if(section == null) {
 			throw new RuntimeException("Unable to find section " + sectionUuid);
 		}
+
+		// Disallow if we're in an externally managed site
+		ensureInternallyManaged(section.getCourse().getUuid());
 		
 		// Set the decorator's fields
 		section.setTitle(title);
@@ -1228,12 +1279,13 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		section.setMeetings(filterMeetings(meetings));
 		
 		// Decorate the framework section
-		Group group = siteService().findGroup(sectionUuid);
+		Group group = findGroup(sectionUuid);
 		section.decorateGroup(group);
 
 		// Save the site with its new section
 		try {
 			siteService().save(group.getContainingSite());
+			clearSite(group.getContainingSite().getId());
 			postEvent("section.update", sectionUuid);
 		} catch (IdUnusedException ide) {
 			log.error("Error saving site... could not find site for section " + group, ide);
@@ -1275,7 +1327,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		for(Iterator<String> iter = sectionUuids.iterator(); iter.hasNext();) {
 			String sectionUuid = iter.next();
 			if(log.isDebugEnabled()) log.debug("Disbanding section " + sectionUuid);
-			Group group = siteService().findGroup(sectionUuid);
+			Group group = findGroup(sectionUuid);
 
 			// TODO Add token in UI to intercept double clicks in action buttons
 			// SAK-3553 (Clicking remove button twice during section remove operation results in blank iframe.)
@@ -1292,6 +1344,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 		try {
 			siteService().save(site);
+			clearSite(site.getId());
 			for(Iterator<String> iter = sectionUuids.iterator(); iter.hasNext();) {
 				String sectionUuid = iter.next();
 				postEvent("section.disband", sectionUuid);
@@ -1308,7 +1361,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		String siteId = ref.getId();
 		Site site;
 		try {
-			site = siteService().getSite(siteId);
+			site = getSite(siteId);
 		} catch (IdUnusedException e) {
 			throw new RuntimeException("Can not find site " + courseUuid, e);
 		}
@@ -1328,7 +1381,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		String siteId = ref.getId();
 		Site site;
 		try {
-			site = siteService().getSite(siteId);
+			site = getSite(siteId);
 		} catch (IdUnusedException e) {
 			throw new RuntimeException("Can not find site " + courseUuid, e);
 		}
@@ -1344,6 +1397,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 		try {
 			siteService().save(site);
+			clearSite(ref.getId());
 			if(log.isDebugEnabled()) log.debug("Saved site " + site.getTitle());
 			postEvent("section.external=" + externallyManaged, site.getReference());
 		} catch (IdUnusedException ide) {
@@ -1361,7 +1415,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		String siteId = ref.getId();
 		Site site;
 		try {
-			site = siteService().getSite(siteId);
+			site = getSite(siteId);
 		} catch (IdUnusedException e) {
 			throw new RuntimeException("Can not find site " + courseUuid, e);
 		}
@@ -1378,7 +1432,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		String siteId = ref.getId();
 		Site site;
 		try {
-			site = siteService().getSite(siteId);
+			site = getSite(siteId);
 		} catch (IdUnusedException e) {
 			throw new RuntimeException("Can not find site " + courseUuid, e);
 		}
@@ -1392,6 +1446,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		props.addProperty(CourseImpl.STUDENT_SWITCHING_ALLOWED, Boolean.toString(switchAllowed));
 		try {
 			siteService().save(site);
+			clearSite(site.getId());
 			if(joinAllowed != oldJoin) {
 				postEvent("section.student.reg=" + joinAllowed, site.getReference());
 			}
@@ -1414,7 +1469,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		String siteId = ref.getId();
 		Site site;
 		try {
-			site = siteService().getSite(siteId);
+			site = getSite(siteId);
 		} catch (IdUnusedException e) {
 			throw new RuntimeException("Can not find site " + courseUuid, e);
 		}
@@ -1433,21 +1488,17 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		List siteEnrollments = getSiteEnrollments(siteId);
 		
 		// Get all userUids of students enrolled in sections of this category
+		
 		List<String> sectionedStudentUids = new ArrayList<String>();
-		List categorySections = getSectionsInCategory(siteId, category);
-		for(Iterator sectionIter = categorySections.iterator(); sectionIter.hasNext();) {
-			CourseSection section = (CourseSection)sectionIter.next();
-			List sectionUsers = getSectionEnrollments(section.getUuid());
-			
-			if(log.isDebugEnabled()) log.debug("There are " + sectionUsers.size() +
-					" students in section " + section.getUuid());
-
-			for(Iterator userIter = sectionUsers.iterator(); userIter.hasNext();) {
-				ParticipationRecord record = (ParticipationRecord)userIter.next();
-				sectionedStudentUids.add(record.getUser().getUserUid());
-			}
-		}
-
+		List<String> categorySections = getSectionIdsInCategory(siteId, category);
+		
+		Set usersbygroup = authzGroupService.getUsersIsAllowedByGroup(SectionAwareness.STUDENT_MARKER, categorySections);
+		
+		for (Iterator iterator = usersbygroup.iterator(); iterator.hasNext();) {  
+		     String[] entry = (String[]) iterator.next(); 
+		     sectionedStudentUids.add(entry[0]);
+		  } 
+		
 		// Now generate the list of unsectioned enrollments by subtracting the two collections
 		// Since the APIs return different kinds of objects, we need to iterate
 		List<EnrollmentRecord> unsectionedEnrollments = new ArrayList<EnrollmentRecord>();
@@ -1463,7 +1514,65 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 	/**
 	 * {@inheritDoc}
 	 */
+	public Map getEnrollmentCount(List sectionSet) {
+		ArrayList<String> siteGroupRefs = new ArrayList<String>(sectionSet.size());
+		
+		for(Iterator sectionIter = sectionSet.iterator(); sectionIter.hasNext();) {
+			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();			
+			siteGroupRefs.add(section.getGroup().getReference()); 
+		}		
+		
+		return authzGroupService.getUserCountIsAllowed(SectionAwareness.STUDENT_MARKER, siteGroupRefs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String,List<ParticipationRecord>> getSectionTeachingAssistantsMap(List sectionSet)
+	{
+		ArrayList<String> siteGroupRefs = new ArrayList<String>(sectionSet.size());
+		Map<String,List<ParticipationRecord>> sectionTaMap = new HashMap<String,List<ParticipationRecord>>();
+		
+		// Iterate through sections and create an empty TA set for each
+		for(Iterator sectionIter = sectionSet.iterator(); sectionIter.hasNext();) {
+			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();			
+			siteGroupRefs.add(section.getGroup().getReference());
+			
+			List<ParticipationRecord> membersList = new ArrayList<ParticipationRecord>();
+			sectionTaMap.put(section.getGroup().getReference(), membersList);
+		}		
+
+		Set usersbygroup = authzGroupService.getUsersIsAllowedByGroup(SectionAwareness.TA_MARKER, siteGroupRefs);
+		
+		// Iterate through user/group pairs and add to the Map
+		for (Iterator iterator = usersbygroup.iterator(); iterator.hasNext();) {  
+		     String[] entry = (String[]) iterator.next();
+		     
+		     String useruid = entry[0];
+		     String sectionUuid = entry[1];		     
+		     
+		     List<ParticipationRecord> membersList = sectionTaMap.get(sectionUuid);
+		     
+		     try {
+		    	 org.sakaiproject.user.api.User sakaiUser = userDirectoryService.getUser(useruid);
+			     User user = SakaiUtil.convertUser(sakaiUser);
+			     TeachingAssistantRecordImpl record = new TeachingAssistantRecordImpl(user);
+			     membersList.add(record);					
+		     } catch (UserNotDefinedException ex) {
+		    	 if (log.isDebugEnabled()) log.debug("Userid " + useruid + " found in group " + sectionUuid + " does not exist");
+		     }
+		  } 
+		
+		return sectionTaMap;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public Set<EnrollmentRecord> getSectionEnrollments(String userUid, String courseUuid) {
+
+		if(log.isDebugEnabled()) log.debug("getSectionEnrollments for userUid " + userUid + " courseUuid " + courseUuid);
+		
 		// Get the user
 		org.sakaiproject.user.api.User sakaiUser;
 		try {
@@ -1481,17 +1590,28 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 		
 		// Generate a set of sections for which this user is enrolled
 		Set<EnrollmentRecord> sectionEnrollments = new HashSet<EnrollmentRecord>();
+		ArrayList<String> siteGroupRefs = new ArrayList<String>(sections.size());
+		
 		for(Iterator sectionIter = sections.iterator(); sectionIter.hasNext();) {
-			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();
-			Group group = section.getGroup();
+			CourseSectionImpl section = (CourseSectionImpl)sectionIter.next();			
+			siteGroupRefs.add(section.getGroup().getReference()); 
+		}
+
+		List groups = authzGroupService.getAuthzUserGroupIds(siteGroupRefs, userUid);
+
+		// Check membership of groups
+        for (Iterator i = groups.iterator(); i.hasNext();)
+        {
+			Group group = findGroup((String)i.next());
 			Member member = group.getMember(userUid);
 			if(member == null) {
 				continue;
 			}
 			if(member.getRole().isAllowed(SectionAwareness.STUDENT_MARKER)) {
-				sectionEnrollments.add(new EnrollmentRecordImpl(section, null, sectionUser));
+				sectionEnrollments.add(new EnrollmentRecordImpl(new CourseSectionImpl(group), null, sectionUser));
 			}
-		}
+        }
+		
 		return sectionEnrollments;
 	}
 
@@ -1556,5 +1676,9 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 	public void setGroupProvider(GroupProvider groupProvider) {
 		this.groupProvider = groupProvider;
+	}
+
+	public void setThreadLocalManager(ThreadLocalManager threadLocalManager) {
+		this.threadLocalManager = threadLocalManager;
 	}
 }
