@@ -55,11 +55,19 @@ When a test harness becomes available this code should be ported.
 
 Hard coding the version so that we dont forget.
 -->
+ 		<!--
+ 		<dependency>
+            <groupId>org.sakaiproject.kernel</groupId>
+            <artifactId>sakai-kernel-util</artifactId>
+        </dependency>
+        -->
+        
     <dependency>
       <groupId>org.sakaiproject.kernel.impl</groupId>
       <artifactId>sakai-util-impl</artifactId>
-      <version>1.0</version>
+      <version>1.0RC2-SNAPSHOT</version>
     </dependency>
+
 <!-- Database dependencies -->
     <dependency>
       <groupId>hsqldb</groupId>
