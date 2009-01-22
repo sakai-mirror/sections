@@ -58,7 +58,7 @@ Hard coding the version so that we dont forget.
     <dependency>
       <groupId>org.sakaiproject.kernel.impl</groupId>
       <artifactId>sakai-util-impl</artifactId>
-      <version>1.0RC2-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
 <!-- Database dependencies -->
     <dependency>
