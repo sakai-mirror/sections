@@ -18,7 +18,7 @@
   <classpathentry kind="var" path="M2_REPO/commons-digester/commons-digester/1.6/commons-digester-1.6.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-el/commons-el/1.0/commons-el-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.1.1/commons-fileupload-1.1.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.2/commons-io-1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-pool/commons-pool/1.2/commons-pool-1.2.jar"/>
@@ -54,14 +54,15 @@
   <classpathentry kind="var" path="M2_REPO/pdfbox/pdfbox/0.6.4/pdfbox-0.6.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/poi/poi/2.5.1-final-20040804/poi-2.5.1-final-20040804.jar"/>
   <classpathentry kind="var" path="M2_REPO/relaxngDatatype/relaxngDatatype/20020414/relaxngDatatype-20020414.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.0.2/sakai-component-manager-1.0.2.jar"/>
   <classpathentry kind="src" path="/sakai-jsf-app"/>
   <classpathentry kind="src" path="/sakai-jsf-spreadsheet"/>
   <classpathentry kind="src" path="/sakai-jsf-tool"/>
   <classpathentry kind="src" path="/sakai-jsf-widgets"/>
   <classpathentry kind="src" path="/sakai-jsf-widgets-myfaces"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0RC2-SNAPSHOT/sakai-kernel-api-1.0RC2-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.0.2/sakai-kernel-api-1.0.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-impl/1.0RC2-SNAPSHOT/sakai-kernel-impl-1.0RC2-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0RC2-SNAPSHOT/sakai-kernel-util-1.0RC2-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/1.0.2/sakai-kernel-util-1.0.2.jar"/>
   <classpathentry kind="src" path="/sakai-sections-api"/>
   <classpathentry kind="src" path="/sakai-sections-app-util"/>
   <classpathentry kind="src" path="/sakai-sections-impl"/>
