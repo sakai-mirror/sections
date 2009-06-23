@@ -1,8 +1,8 @@
 <projectDescription>
-  <name>sakai-sections-api</name>
+  <name>sakai-sections-pack</name>
   <comment/>
   <projects>
-    <project>sakai-component</project>
+    <project>sakai-sections-impl</project>
   </projects>
   <buildSpec>
     <buildCommand>

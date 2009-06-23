@@ -1,9 +1,7 @@
 <projectDescription>
-  <name>sakai-sections-api</name>
+  <name>sakai-sections-help</name>
   <comment/>
-  <projects>
-    <project>sakai-component</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>

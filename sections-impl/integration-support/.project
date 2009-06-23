@@ -1,8 +1,12 @@
 <projectDescription>
-  <name>sakai-sections-api</name>
+  <name>sakai-sections-integrationsupport</name>
   <comment/>
   <projects>
-    <project>sakai-component</project>
+    <project>sakai-sections-api</project>
+    <project>sakai-sections-impl-standalone</project>
+    <project>sakai-util</project>
+    <project>sakai-util-api</project>
+    <project>sakai-util-impl</project>
   </projects>
   <buildSpec>
     <buildCommand>
