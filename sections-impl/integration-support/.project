@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>sakai-sections-integrationsupport</name>
+  <comment/>
+  <projects>
+    <project>sakai-sections-api</project>
+    <project>sakai-sections-impl-standalone</project>
+    <project>sakai-util</project>
+    <project>sakai-util-api</project>
+    <project>sakai-util-impl</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
