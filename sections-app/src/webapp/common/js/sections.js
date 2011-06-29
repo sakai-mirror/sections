@@ -71,8 +71,6 @@ function updateOptionBoxes(externallyManaged) {
 	}
 	var selfJoin = document.getElementById("optionsForm:selfRegister");
 	var selfSwitch = document.getElementById("optionsForm:selfSwitch");
-	var openSwitch = document.getElementById("optionsForm:openSwitch");
-	var openDate = document.getElementById("optionsForm:openDate");
 
 	if(externallyManaged.value=='external') {
 		// Automatic section management is selected
@@ -80,17 +78,10 @@ function updateOptionBoxes(externallyManaged) {
 		selfJoin.disabled = true;
 		selfSwitch.checked = false;
 		selfSwitch.disabled = true;
-		openSwitch.checked = false;
-		openSwitch.disabled = true;
-		openDate.value = "";
-		openDate.disabled = true;
 	} else {
 		// Manual section management is selected
 		selfJoin.disabled = false;
 		selfSwitch.disabled = false;
-		openSwitch.disabled = false;
-		openDate.disabled = false;
-		calendar.disabled = false;		
 	}
 }
 
