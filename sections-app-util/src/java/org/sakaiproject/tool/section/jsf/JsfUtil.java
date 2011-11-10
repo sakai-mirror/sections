@@ -23,6 +23,7 @@ package org.sakaiproject.tool.section.jsf;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.text.DateFormatSymbols;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
@@ -188,9 +189,9 @@ public class JsfUtil {
 
 		// Set the am/pm flag to ensure that the time is parsed properly
 		if(am) {
-			str = str + " AM";
+			str = str + " " + new DateFormatSymbols(new ResourceLoader().getLocale()).getAmPmStrings()[0];
 		} else {
-			str = str + " PM";
+			str = str + " " + new DateFormatSymbols(new ResourceLoader().getLocale()).getAmPmStrings()[1];
 		}
 
 		String pattern = (str.indexOf(':') != -1) ? JsfUtil.TIME_PATTERN_LONG : JsfUtil.TIME_PATTERN_SHORT;
