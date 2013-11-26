@@ -186,7 +186,7 @@ public class OptionsBean extends CourseDependentBean implements Serializable {
 		if (openDate == null) {
 			return null;
 		} else {
-			SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 			return sd.format(openDate.getTime());
 		}
 	}
@@ -195,7 +195,7 @@ public class OptionsBean extends CourseDependentBean implements Serializable {
 		if (date==null || date.length()==0) {
 			this.openDate=null;
 		}else{
-			SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 			Calendar p = Calendar.getInstance();
 			try {
 				p.setTime(sd.parse(date));
